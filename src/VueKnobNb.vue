@@ -1,5 +1,5 @@
 <template>
-<svg width="100%" height="100%" viewBox="0 0 42 42" preserveAspectRatio >
+<svg width="100%" height="100%" viewBox="0 0 42 42" style="transform: rotate(-90deg);" preserveAspectRatio >
   <circle
           class="hole"
           cx="21"
@@ -55,15 +55,16 @@ export default {
       // '#17d'
     },
     bgcolor:{
-      tyoe:String,
+      type:String,
       required:false,
       default:'#d2d3d4'
     }
   },
   computed:{
     strokeDasharray(){
-      let value = this.value * 94/100;
-      return value + ' ' + (94-value);
+      //94.2 = 2 * PI * RADIOUS (r="15")
+      let value = this.value * 94.2/100;
+      return value + ' ' + (94.2-value);
     },
     labelStyle(){
       let transformY;
@@ -84,6 +85,7 @@ export default {
   },
   methods: {
     computeValue (e) {
+      console.log(e.clientX,e.clientY)
         const rect = this.$refs.ring.getBoundingClientRect(),
             centerX = rect.width / 2 + rect.left,
             centerY = rect.height / 2 + rect.top ,
@@ -91,7 +93,7 @@ export default {
             clickY = e.clientY;
         let result = Math.atan2(centerY - clickY, centerX - clickX);
         let percentage = (result + Math.PI)/(Math.PI + Math.PI);
-        this.$emit('input',Math.ceil(percentage * 100));
+        this.$emit('input',Math.ceil(percentage * 100)+25);
     }
   },
   mounted(){
