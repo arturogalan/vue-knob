@@ -1,41 +1,43 @@
 <template>
+<div>
 <svg width="100%" height="100%" viewBox="0 0 42 42" style="transform: rotate(-90deg);" preserveAspectRatio >
   <circle
-          class="hole"
-          cx="21"
-          cy="21"
-          r="15"
-          fill="#fff">
+    class="hole"
+    cx="21"
+    cy="21"
+    r="15"
+    :fill="fillcolor">
+  </circle>
+  <circle 
+    ref="ring"
+    class="ring"
+    cx="21"
+    cy="21"
+    r="15"
+    fill="transparent"
+    :stroke="bgcolor"
+    stroke-width="5">
   </circle>
   <circle
-          ref="ring"
-          class="ring"
-          cx="21"
-          cy="21"
-          r="15"
-          fill="transparent"
-          :stroke="bgcolor"
-          stroke-width="5">
-     </circle>
-  <circle
-          ref="segment"
-          class="segment"
-          cx="21"
-          cy="21"
-          r="15"
-          fill="transparent"
-          :stroke="fillcolor"
-          stroke-width="5"
-          :stroke-dasharray="strokeDasharray"
-          stroke-dashoffset="0">
-    </circle>
-    <g>
-    <text y="50%" x="50%" :style="labelStyle">
+    ref="segment"
+    class="segment"
+    cx="21"
+    cy="21"
+    r="15"
+    fill="transparent"
+    :stroke="barcolor"
+    stroke-width="5"
+    :stroke-dasharray="strokeDasharray"
+    stroke-dashoffset="0">
+  </circle>
+  <g transform = "rotate(90 21 21)">
+    <text ref="textVal" y="50%" x="50%" :style="labelStyle">
       {{value}}
     </text>
-    </g>
-</svg>
+  </g>
 
+</svg>
+</div>
 </template>
 <script>
 export default {
@@ -51,6 +53,12 @@ export default {
     fillcolor:{
       type:String,
       required:false,
+      default: 'red'
+      // '#17d'
+    },
+    barcolor:{
+      type:String,
+      required:false,
       default: 'black'
       // '#17d'
     },
@@ -58,7 +66,14 @@ export default {
       type:String,
       required:false,
       default:'#d2d3d4'
-    }
+    },
+
+
+  },
+  data() {
+    return {
+      
+    };
   },
   computed:{
     strokeDasharray(){
@@ -92,16 +107,18 @@ export default {
             clickX = e.clientX,
             clickY = e.clientY;
         let result = Math.atan2(centerY - clickY, centerX - clickX);
-        let percentage = (result + Math.PI)/(Math.PI + Math.PI);
-        this.$emit('input',Math.ceil(percentage * 100)+25);
+        let percentage = (result + Math.PI)/(Math.PI + Math.PI) * 100;
+        let adjustPercentage = percentage + 25 > 100 ? percentage + 25 - 100 : percentage + 25; 
+
+        this.$emit('input',Math.ceil(adjustPercentage));
     }
   },
   mounted(){
      this.$refs.ring.addEventListener('click',this.computeValue);
      this.$refs.segment.addEventListener('click',this.computeValue);
+     this.$refs.textVal.addEventListener('click',this.computeValue);
   }
 };
 </script>
 <style>
-
 </style>
