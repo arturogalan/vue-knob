@@ -1,12 +1,12 @@
 <template>
     <div style="height:40vw;width:40vw;margin:auto;">
-        <vue-knob v-model="myVal" color="#f33"></vue-knob>
+        <vue-knob-nb v-model="myVal" fillcolor="black" bgcolor="grey"></vue-knob-nb>
     </div>
 </template>
 <script>
-    import VueKnob from '../src/index'
+    import VueKnobNb from '../src/index'
     export default {
-        components: {VueKnob},
+        components: {VueKnobNb},
         data () {
             return {
                 myVal:5

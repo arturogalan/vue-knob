@@ -1,3 +1,3 @@
-import VueKnob from './VueKnob.vue'
+import VueKnobNb from './VueKnobNb.vue'
 
-export default VueKnob
+export default VueKnobNb

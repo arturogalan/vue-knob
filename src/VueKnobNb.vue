@@ -14,7 +14,7 @@
           cy="21"
           r="15"
           fill="transparent"
-          stroke="#d2d3d4"
+          :stroke="bgcolor"
           stroke-width="5">
      </circle>
   <circle
@@ -24,7 +24,7 @@
           cy="21"
           r="15"
           fill="transparent"
-          :stroke="color"
+          :stroke="fillcolor"
           stroke-width="5"
           :stroke-dasharray="strokeDasharray"
           stroke-dashoffset="0">
@@ -39,7 +39,7 @@
 </template>
 <script>
 export default {
-  template:'#vue-knob',
+  template:'#vue-knob-nb',
   props:{
     value:{
       type:Number,
@@ -48,10 +48,16 @@ export default {
          return value > 0 && value <=100
       }
     },
-    color:{
+    fillcolor:{
       type:String,
       required:false,
-      default:'#17d'
+      default: 'black'
+      // '#17d'
+    },
+    bgcolor:{
+      tyoe:String,
+      required:false,
+      default:'#d2d3d4'
     }
   },
   computed:{
