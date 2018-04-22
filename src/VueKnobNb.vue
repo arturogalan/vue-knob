@@ -5,7 +5,7 @@
     class="hole"
     cx="21"
     cy="21"
-    r="15"
+    :r="radius"
     :fill="fillcolor">
   </circle>
   <circle 
@@ -13,7 +13,7 @@
     class="ring"
     cx="21"
     cy="21"
-    r="15"
+    :r="radius"
     fill="transparent"
     :stroke="bgcolor"
     stroke-width="5"
@@ -24,7 +24,7 @@
     class="segment"
     cx="21"
     cy="21"
-    r="15"
+    :r="radius"
     fill="transparent"
     :stroke="barcolor"
     stroke-width="5"
