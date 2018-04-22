@@ -92,15 +92,15 @@ export default {
       return value + ' ' + (this.circumference-value);
     },
     labelStyle(){
+      //TO-DO: if decimal adjust transformY
       let transformY;
-      if(this.currentValue ===100){
+      let currentValueDigits = this.numDigits(this.currentValue)
+      if(currentValueDigits >= 3){
         transformY = 0.75;
+      }else if(currentValueDigits === 2){
+        transformY = 0.5;
       }else{
-        if(this.currentValue >= 10){
-            transformY = 0.5;
-        }else{
-            transformY = 0.25;
-        }
+        transformY = 0.25;
       }
       return {
         transform: `translateX(-${transformY}em) translateY(0.4em)`,
@@ -122,13 +122,17 @@ export default {
             clickX = e.clientX,
             clickY = e.clientY;
         let result = Math.atan2(centerY - clickY, centerX - clickX);
-        let percentage = (result + Math.PI)/(Math.PI + Math.PI) * 100;
+        let percentage = (result + Math.PI)/(Math.PI + Math.PI) * this.maxValue;
         // delta: the percentaje that represents the rotate: 90 degrees of rotate represents the 25% of the circumference
-        let deltaPercentaje = (this.svgRotate / 360) * 100;
+        let deltaPercentaje = (this.svgRotate / 360) * this.maxValue;
         let adjustPercentage = (percentage + deltaPercentaje) 
         // console.log(this.maxValue * Math.trunc(adjustPercentage/this.maxValue))
         adjustPercentage = (adjustPercentage > this.maxValue) ? adjustPercentage - this.maxValue : adjustPercentage; 
+        //TO-DO if decimal: this.currentValue = adjustPercentage; and round to 1 digit
         this.currentValue = Math.ceil(adjustPercentage);
+    },
+    numDigits(x) {
+      return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
     }
   },
   mounted(){

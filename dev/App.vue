@@ -10,7 +10,7 @@
         components: {VueKnobNb},
         data () {
             return {
-                myVal:5
+                myVal:25
             }
         }
     }
