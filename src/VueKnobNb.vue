@@ -16,7 +16,8 @@
     r="15"
     fill="transparent"
     :stroke="bgcolor"
-    stroke-width="5">
+    stroke-width="5"
+    @click="computeValue">
   </circle>
   <circle
     ref="segment"
@@ -28,11 +29,12 @@
     :stroke="barcolor"
     stroke-width="5"
     :stroke-dasharray="strokeDasharray"
-    stroke-dashoffset="0">
+    stroke-dashoffset="0"
+    @click="computeValue">
   </circle>
   <g transform = "rotate(90 21 21)">
-    <text ref="textVal" y="50%" x="50%" :style="labelStyle">
-      {{value}}
+    <text ref="textVal" y="50%" x="50%" :style="labelStyle" @click="computeValue">
+      {{currentValue}}
     </text>
   </g>
 
@@ -43,11 +45,11 @@
 export default {
   template:'#vue-knob-nb',
   props:{
-    value:{
+    initValue:{
       type:Number,
       required:true,
-      validator: (value) => {
-         return value > 0 && value <=100
+      validator: (initValue) => {
+         return initValue > 0 && initValue <=100
       }
     },
     fillcolor:{
@@ -67,26 +69,29 @@ export default {
       required:false,
       default:'#d2d3d4'
     },
-
-
   },
   data() {
     return {
-      
+      radius: 15,
+      currentValue: this.initValue
     };
   },
   computed:{
+    circumference(){ 
+      return this.radius * 2 * Math.PI
+    },
     strokeDasharray(){
       //94.2 = 2 * PI * RADIOUS (r="15")
-      let value = this.value * 94.2/100;
-      return value + ' ' + (94.2-value);
+      // console.log(this.circumference)
+      let value = this.currentValue * this.circumference/100;
+      return value + ' ' + (this.circumference-value);
     },
     labelStyle(){
       let transformY;
-      if(this.value ===100){
+      if(this.currentValue ===100){
         transformY = 0.75;
       }else{
-        if(this.value >= 10){
+        if(this.currentValue >= 10){
             transformY = 0.5;
         }else{
             transformY = 0.25;
@@ -97,11 +102,11 @@ export default {
         'font-size':'0.7em'
       }
     }
+    
   },
   methods: {
     computeValue (e) {
-      console.log(e.clientX,e.clientY)
-        const rect = this.$refs.ring.getBoundingClientRect(),
+        const rect = this.$refs.ring.getBoundingClientRect(), 
             centerX = rect.width / 2 + rect.left,
             centerY = rect.height / 2 + rect.top ,
             clickX = e.clientX,
@@ -109,14 +114,10 @@ export default {
         let result = Math.atan2(centerY - clickY, centerX - clickX);
         let percentage = (result + Math.PI)/(Math.PI + Math.PI) * 100;
         let adjustPercentage = percentage + 25 > 100 ? percentage + 25 - 100 : percentage + 25; 
-
-        this.$emit('input',Math.ceil(adjustPercentage));
+        this.currentValue = Math.ceil(adjustPercentage);
     }
   },
   mounted(){
-     this.$refs.ring.addEventListener('click',this.computeValue);
-     this.$refs.segment.addEventListener('click',this.computeValue);
-     this.$refs.textVal.addEventListener('click',this.computeValue);
   }
 };
 </script>
