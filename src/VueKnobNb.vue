@@ -1,6 +1,6 @@
 <template>
 <div>
-<svg width="100%" height="100%" viewBox="0 0 42 42" style="transform: rotate(-90deg);" preserveAspectRatio >
+<svg width="100%" height="100%" viewBox="0 0 42 42"  v-bind:style="svgStyle" preserveAspectRatio >
   <circle
     class="hole"
     cx="21"
@@ -52,6 +52,11 @@ export default {
          return initValue > 0 && initValue <=100
       }
     },
+    maxValue:{
+      type:Number,
+      required:false,
+      default: 100
+    },
     fillcolor:{
       type:String,
       required:false,
@@ -73,17 +78,17 @@ export default {
   data() {
     return {
       radius: 15,
+      svgRotate: 90,
       currentValue: this.initValue
     };
   },
   computed:{
     circumference(){ 
+      //94.2 = 2 * PI * RADIOUS (r="15")
       return this.radius * 2 * Math.PI
     },
     strokeDasharray(){
-      //94.2 = 2 * PI * RADIOUS (r="15")
-      // console.log(this.circumference)
-      let value = this.currentValue * this.circumference/100;
+      let value = (this.circumference/this.maxValue) * this.currentValue;
       return value + ' ' + (this.circumference-value);
     },
     labelStyle(){
@@ -101,11 +106,16 @@ export default {
         transform: `translateX(-${transformY}em) translateY(0.4em)`,
         'font-size':'0.7em'
       }
-    }
-    
+    },
+    svgStyle(){
+        return {
+          transform: `rotate(-${this.svgRotate}deg)`
+        }
+      }
   },
   methods: {
     computeValue (e) {
+        // The percentaje where user clicks
         const rect = this.$refs.ring.getBoundingClientRect(), 
             centerX = rect.width / 2 + rect.left,
             centerY = rect.height / 2 + rect.top ,
@@ -113,7 +123,11 @@ export default {
             clickY = e.clientY;
         let result = Math.atan2(centerY - clickY, centerX - clickX);
         let percentage = (result + Math.PI)/(Math.PI + Math.PI) * 100;
-        let adjustPercentage = percentage + 25 > 100 ? percentage + 25 - 100 : percentage + 25; 
+        // delta: the percentaje that represents the rotate: 90 degrees of rotate represents the 25% of the circumference
+        let deltaPercentaje = (this.svgRotate / 360) * 100;
+        let adjustPercentage = (percentage + deltaPercentaje) 
+        // console.log(this.maxValue * Math.trunc(adjustPercentage/this.maxValue))
+        adjustPercentage = (adjustPercentage > this.maxValue) ? adjustPercentage - this.maxValue : adjustPercentage; 
         this.currentValue = Math.ceil(adjustPercentage);
     }
   },
