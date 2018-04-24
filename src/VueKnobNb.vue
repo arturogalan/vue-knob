@@ -1,13 +1,23 @@
 <template>
-<div>
-<svg width="100%" height="100%" viewBox="0 0 42 42"  v-bind:style="svgStyle" preserveAspectRatio >
+<div class="container">
+  <svg width="100%" height="100%" viewBox="0 0 42 42" class='svg-above' v-bind:style="svgStyle" preserveAspectRatio >
   <circle
-    class="hole"
+    class="stroke-hole"
     cx="21"
     cy="21"
-    :r="radius"
-    :fill="fillcolor">
+    :r="radius-3"
+    >
   </circle>
+  <circle
+    class="stroke-mark"
+    cx="21"
+    cy="21"
+    :r="(radius-3)/2"
+    >
+  </circle>
+</svg>
+<svg width="100%" height="100%" viewBox="0 0 42 42"  v-bind:style="svgStyle" preserveAspectRatio >
+
   <circle 
     ref="ring"
     class="ring"
@@ -37,8 +47,8 @@
       {{currentValue}}
     </text>
   </g>
-
 </svg>
+
 </div>
 </template>
 <script>
@@ -104,7 +114,8 @@ export default {
       }
       return {
         transform: `translateX(-${transformY}em) translateY(0.4em)`,
-        'font-size':'0.7em'
+        'font-size':'0.7em',
+        'z-index': '500'
       }
     },
     svgStyle(){
@@ -130,6 +141,7 @@ export default {
         adjustPercentage = (adjustPercentage > this.maxValue) ? adjustPercentage - this.maxValue : adjustPercentage; 
         //TO-DO if decimal: this.currentValue = adjustPercentage; and round to 1 digit
         this.currentValue = Math.ceil(adjustPercentage);
+        console.log('result: ', result)
     },
     numDigits(x) {
       return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
@@ -140,4 +152,33 @@ export default {
 };
 </script>
 <style>
+.container{
+  position: relative;
+}
+.svg-above{
+  position: absolute;
+  top: 0;
+  left:0;
+  width: 100%;
+  height: 100%;
+  animation: spin 1s linear infinite;
+}
+.stroke-hole{
+  fill: none;
+  stroke: orange;
+  stroke-width: 5;
+  stroke-dasharray: 2, 2;
+}
+.stroke-mark{
+  fill: none;
+  stroke: blue;
+  stroke-width: 7;
+  stroke-dasharray: 1, 90;
+}
+
+@keyframes spin { 
+  100% { 
+    /* transform: rotate(60deg); */
+  }
+}
 </style>
