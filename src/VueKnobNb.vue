@@ -1,21 +1,25 @@
 <template>
 <div class="container">
-  <svg width="100%" height="100%" viewBox="0 0 42 42" class='svg-above' v-bind:style="svgStyle" preserveAspectRatio >
-  <circle
-    class="stroke-hole"
-    cx="21"
-    cy="21"
-    :r="radius-3"
-    >
-  </circle>
-  <circle
-    class="stroke-mark"
-    cx="21"
-    cy="21"
-    :r="(radius-3)/2"
-    >
-  </circle>
-</svg>
+
+  <button @click="toggleShow">
+    <span>Here we go!</span>
+  </button>
+      <svg id="rotationSVG" width="100%" height="100%" viewBox="0 0 42 42" v-bind:style="svgAbove" preserveAspectRatio >
+      <circle
+        class="stroke-hole"
+        cx="21"
+        cy="21"
+        :r="radius-3"
+        >
+      </circle>
+      <circle
+        class="stroke-mark"
+        cx="21"
+        cy="21"
+        :r="(radius-3)/2"
+        >
+      </circle>
+    </svg>
 <svg width="100%" height="100%" viewBox="0 0 42 42"  v-bind:style="svgStyle" preserveAspectRatio >
 
   <circle 
@@ -89,7 +93,9 @@ export default {
     return {
       radius: 15,
       svgRotate: 90,
-      currentValue: this.initValue
+      currentValue: this.initValue,
+      isShowing: false,
+      testValue: 0
     };
   },
   computed:{
@@ -122,7 +128,19 @@ export default {
         return {
           transform: `rotate(-${this.svgRotate}deg)`
         }
-      }
+    },
+    svgAbove(){
+        return {
+          position: 'absolute',
+          top: 0,
+          left:0,
+          width: '100%',
+          height: '100%',
+          transition: 'all 1s ease',
+          transform: `rotate(${this.testValue-this.svgRotate}deg)`
+        }
+    }
+
   },
   methods: {
     computeValue (e) {
@@ -141,10 +159,21 @@ export default {
         adjustPercentage = (adjustPercentage > this.maxValue) ? adjustPercentage - this.maxValue : adjustPercentage; 
         //TO-DO if decimal: this.currentValue = adjustPercentage; and round to 1 digit
         this.currentValue = Math.ceil(adjustPercentage);
-        console.log('result: ', result)
+
+        let deltaDegrees = (this.svgRotate / 360) * 360;
+        let degress = (result + Math.PI)/(Math.PI + Math.PI) * 360;
+        let adjustDegrees = (degress + deltaDegrees) 
+        // console.log(this.maxValue * Math.trunc(adjustPercentage/this.maxValue))
+        adjustDegrees = (adjustDegrees > 360) ? adjustDegrees - 360 : adjustDegrees; 
+        console.log('degress: ', adjustDegrees)
+        console.log('testValue',this.testValue)
+        this.testValue = adjustDegrees;
     },
     numDigits(x) {
       return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
+    },
+    toggleShow(){
+      this.testValue += 40;
     }
   },
   mounted(){
@@ -155,14 +184,14 @@ export default {
 .container{
   position: relative;
 }
-.svg-above{
+/* .svg-above{
   position: absolute;
   top: 0;
   left:0;
   width: 100%;
   height: 100%;
-  animation: spin 1s linear infinite;
-}
+  animation: spin 1s linear 0s 1 normal both;
+} */
 .stroke-hole{
   fill: none;
   stroke: orange;
@@ -175,10 +204,37 @@ export default {
   stroke-width: 7;
   stroke-dasharray: 1, 90;
 }
-
-@keyframes spin { 
+/* .spin-animation{
+  animation: spin 1s linear 0s 1 normal both;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  display: inline-block;
+} */
+/* @keyframes spin { 
+  0% { transform: rotate(0deg); }
   100% { 
-    /* transform: rotate(60deg); */
+    transform: rotate(90deg);
+    display: inline-block;
   }
+} */
+
+
+
+
+button {
+  font-family: 'Bitter';
+  background: #c62735;
+  color: white;
+  border: 0;
+  padding: 5px 15px;
+  margin: 0 10px;
+  border-radius: 4px;
+  outline: 0;
+  cursor: pointer;
+  position: absolute;
+  z-index: 100000;
 }
+
+
+
 </style>
