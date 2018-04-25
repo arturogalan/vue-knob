@@ -1,22 +1,18 @@
 <template>
-<div class="container">
-
-  <button @click="toggleShow">
-    <span>Here we go!</span>
-  </button>
+<div class="container" @click="computeValue">
       <svg id="rotationSVG" width="100%" height="100%" viewBox="0 0 42 42" v-bind:style="svgAbove" preserveAspectRatio >
       <circle
         class="stroke-hole"
         cx="21"
         cy="21"
-        :r="radius-3"
+        :r="radius-6"
         >
       </circle>
       <circle
         class="stroke-mark"
         cx="21"
         cy="21"
-        :r="(radius-3)/2"
+        r="5"
         >
       </circle>
     </svg>
@@ -120,8 +116,8 @@ export default {
       }
       return {
         transform: `translateX(-${transformY}em) translateY(0.4em)`,
-        'font-size':'0.7em',
-        'z-index': '500'
+        'font-size':'0.9em',
+        'fill': 'blue'
       }
     },
     svgStyle(){
@@ -137,7 +133,7 @@ export default {
           width: '100%',
           height: '100%',
           transition: 'all 1s ease',
-          transform: `rotate(${this.testValue-this.svgRotate}deg)`
+          transform: `rotate(${this.testValue-this.svgRotate-2}deg)`
         }
     }
 
@@ -165,18 +161,22 @@ export default {
         let adjustDegrees = (degress + deltaDegrees) 
         // console.log(this.maxValue * Math.trunc(adjustPercentage/this.maxValue))
         adjustDegrees = (adjustDegrees > 360) ? adjustDegrees - 360 : adjustDegrees; 
-        console.log('degress: ', adjustDegrees)
-        console.log('testValue',this.testValue)
+        console.log('result: ', result)
         this.testValue = adjustDegrees;
     },
     numDigits(x) {
       return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
-    },
-    toggleShow(){
-      this.testValue += 40;
     }
   },
   mounted(){
+
+    let initialDegress = this.currentValue/this.maxValue * 360;
+    console.log('initialDegress: '+ initialDegress)
+
+    var self = this;
+    setTimeout(function(){
+        self.testValue = initialDegress;
+    }, 250);
   }
 };
 </script>
@@ -184,6 +184,20 @@ export default {
 .container{
   position: relative;
 }
+.stroke-hole{
+  fill: black;
+  stroke: black;
+  stroke-width: 5;
+  stroke-dasharray: 2, 2;
+}
+.stroke-mark{
+  fill: none;
+  stroke: whitesmoke;
+  stroke-width: 7;
+  stroke-dasharray: 1, 90;
+}
+
+
 /* .svg-above{
   position: absolute;
   top: 0;
@@ -192,18 +206,6 @@ export default {
   height: 100%;
   animation: spin 1s linear 0s 1 normal both;
 } */
-.stroke-hole{
-  fill: none;
-  stroke: orange;
-  stroke-width: 5;
-  stroke-dasharray: 2, 2;
-}
-.stroke-mark{
-  fill: none;
-  stroke: blue;
-  stroke-width: 7;
-  stroke-dasharray: 1, 90;
-}
 /* .spin-animation{
   animation: spin 1s linear 0s 1 normal both;
   -webkit-animation-fill-mode: both;
@@ -217,24 +219,5 @@ export default {
     display: inline-block;
   }
 } */
-
-
-
-
-button {
-  font-family: 'Bitter';
-  background: #c62735;
-  color: white;
-  border: 0;
-  padding: 5px 15px;
-  margin: 0 10px;
-  border-radius: 4px;
-  outline: 0;
-  cursor: pointer;
-  position: absolute;
-  z-index: 100000;
-}
-
-
 
 </style>
